@@ -1,17 +1,8 @@
 CREATE TABLE IF NOT EXISTS users (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  username TEXT NOT NULL,
-  username_key TEXT NOT NULL UNIQUE,
-  password_hash TEXT NOT NULL,
-  rules_accepted_at TEXT NOT NULL,
-  role TEXT NOT NULL DEFAULT 'user' CHECK(role IN ('user','mod','owner')),
-  allow_messages INTEGER NOT NULL DEFAULT 1,
-  language TEXT NOT NULL DEFAULT 'en' CHECK(language IN ('de','en')),
-  last_message_at TEXT,
-  last_seen_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  name_changed_at TEXT,
-  muted_until TEXT,
-  deleted_at TEXT
+  id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL, username_key TEXT NOT NULL UNIQUE, password_hash TEXT NOT NULL,
+  rules_accepted_at TEXT NOT NULL, role TEXT NOT NULL DEFAULT 'user' CHECK(role IN ('user','mod','owner')), allow_messages INTEGER NOT NULL DEFAULT 1,
+  language TEXT NOT NULL DEFAULT 'en' CHECK(language IN ('de','en')), last_message_at TEXT, last_seen_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  name_changed_at TEXT, muted_until TEXT, deleted_at TEXT
 );
 CREATE TABLE IF NOT EXISTS muted_ips (ip TEXT PRIMARY KEY, expire_at TEXT NOT NULL, reason TEXT NOT NULL, original_user_id INTEGER REFERENCES users(id));
 CREATE TABLE IF NOT EXISTS ip_registrations (ip TEXT PRIMARY KEY, count INTEGER NOT NULL DEFAULT 0, last_created TEXT);
@@ -24,3 +15,4 @@ CREATE TABLE IF NOT EXISTS ticket_messages (id INTEGER PRIMARY KEY AUTOINCREMENT
 CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS moderation_actions (id INTEGER PRIMARY KEY AUTOINCREMENT, target_user_id INTEGER NOT NULL REFERENCES users(id), moderator_id INTEGER NOT NULL REFERENCES users(id), kind TEXT NOT NULL, duration TEXT, note TEXT, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
 CREATE TABLE IF NOT EXISTS chat_locks (id INTEGER PRIMARY KEY CHECK(id=1), until TEXT NOT NULL, note TEXT NOT NULL, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE IF NOT EXISTS message_events (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL REFERENCES users(id), created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
